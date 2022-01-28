@@ -55,7 +55,7 @@
       </div>
     </div>
     <div class="middleBox">
-      <el-button type="text" @click="addTeacher">添加教师</el-button>
+      <el-button type="text" :icon="Plus" @click="addTeacher"><el-icon><plus /></el-icon>添加教师</el-button>
     </div>
     <div class="table">
       <el-table
@@ -96,14 +96,14 @@
         <el-table-column label="操作" align="center">
           <template v-slot="scope">
             <el-button
-              size="mini"
+              size="small"
               type="primary"
               @click="handleEdit(scope.row)"
             >
               编辑
             </el-button>
             <el-button
-              size="mini"
+              size="small"
               type="danger"
               @click="handleDelete(scope.row)"
             >
@@ -236,6 +236,7 @@
 </template>
 
 <script>
+import {Plus} from '@element-plus/icons'
 export default {
   data() {
     return {
@@ -318,6 +319,9 @@ export default {
     // 保存新增信息
     saveTeacher() {},
   },
+  components: {
+    Plus
+  }
 };
 </script>
 
