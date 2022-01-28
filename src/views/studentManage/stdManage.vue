@@ -8,6 +8,7 @@
           class="input"
           v-model="lessonName"
           size="large"
+          placeholder="请输入"
         ></el-input>
       </div>
       <div class="inputBox">
@@ -17,7 +18,20 @@
           class="input"
           v-model="lessonName"
           size="large"
+          placeholder="请输入"
         ></el-input>
+      </div>
+      <div class="inputBox">
+        <div class="text" style="width: 80px">所属院系</div>
+        <el-select v-model="value" placeholder="请选择院系" size="large">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
       </div>
       <div class="btnBox">
         <el-button type="primary">查询</el-button>
@@ -45,12 +59,7 @@
           width="180"
           align="center"
         />
-        <el-table-column
-          prop="id"
-          label="学号"
-          width="180"
-          align="center"
-        />
+        <el-table-column prop="id" label="学号" width="180" align="center" />
         <el-table-column
           prop="dept"
           label="所属院系"
@@ -79,72 +88,96 @@
     </div>
     <!-- 新增的弹框 -->
     <el-dialog
-      v-model="addLessonDialogVisible"
-      title="新增课程"
+      v-model="addStudentDialogVisible"
+      title="新增学生"
       center
       width="25%"
       :before-close="handleClose"
     >
       <div class="titleBox">
-        <div class="titleText">课程名称</div>
+        <div class="titleText">学生姓名</div>
         <el-input
           type="text"
           class="inputText"
           v-model="lessonName"
           size="large"
+          placeholder="请输入"
         ></el-input>
       </div>
       <div class="titleBox" style="margin-top: 20px">
-        <div class="titleText">负责教师</div>
+        <div class="titleText" style="text-align: right">学号</div>
         <el-input
           type="text"
           class="inputText"
           v-model="lessonName"
           size="large"
+          placeholder="请输入"
         ></el-input>
+      </div>
+      <div class="titleBox" style="margin-top: 20px">
+        <div class="titleText" style="width: 75px">所属院系</div>
+        <el-select v-model="value" placeholder="请选择院系" size="large">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
       </div>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="addLessonDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="saveLesson"
-            >确定</el-button
-          >
+          <el-button @click="addStudentDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="saveStudent">确定</el-button>
         </span>
       </template>
     </el-dialog>
 
     <!-- 编辑弹框 -->
     <el-dialog
-      v-model="editLessonDialogVisible"
+      v-model="editStudentDialogVisible"
       title="编辑"
       center
       width="25%"
       :before-close="handleClose"
     >
       <div class="titleBox">
-        <div class="titleText">课程名称</div>
+        <div class="titleText">学生姓名</div>
         <el-input
           type="text"
           class="inputText"
           v-model="lessonName"
           size="large"
+          placeholder="请输入"
         ></el-input>
       </div>
       <div class="titleBox" style="margin-top: 20px">
-        <div class="titleText">负责教师</div>
+        <div class="titleText" style="text-align: right">学号</div>
         <el-input
           type="text"
           class="inputText"
           v-model="lessonName"
           size="large"
+          placeholder="请输入"
         ></el-input>
+      </div>
+      <div class="titleBox" style="margin-top: 20px">
+        <div class="titleText" style="width: 75px">所属院系</div>
+        <el-select v-model="value" placeholder="请选择院系" size="large">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
       </div>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="editLessonDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="editLessonInfo"
-            >确定</el-button
-          >
+          <el-button @click="editStudentDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="editStudentInfo">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -155,8 +188,8 @@
 export default {
   data() {
     return {
-      addLessonDialogVisible: false,
-      editLessonDialogVisible: false,
+      addStudentDialogVisible: false,
+      editStudentDialogVisible: false,
       lessonName: "",
       tableData: [
         {
@@ -174,8 +207,22 @@ export default {
           name: "Danny",
           dept: "计算机与信息工程学院",
         },
-        
       ],
+      options: [
+        {
+          value: "1",
+          label: "计算机与信息工程学院",
+        },
+        {
+          value: "2",
+          label: "经管学院",
+        },
+        {
+          value: "3",
+          label: "文理学部",
+        },
+      ],
+      value:""
     };
   },
   methods: {
@@ -191,20 +238,16 @@ export default {
     handleDelete() {},
     // 显示新增课程弹框
     addLesson() {
-      this.addLessonDialogVisible = true;
+      this.addStudentDialogVisible = true;
     },
     // 显示编辑弹框
-    handleEdit(){
-      this.editLessonDialogVisible = true;
+    handleEdit() {
+      this.editStudentDialogVisible = true;
     },
     // 保存编辑信息
-    editLessonInfo(){
-
-    },
+    editStudentInfo() {},
     // 保存新增信息
-    saveLesson(){
-
-    },
+    saveStudent() {},
   },
 };
 </script>
@@ -221,7 +264,7 @@ export default {
     padding-top: 10px;
     .inputBox {
       // border: 1px solid red;
-      margin-left: 10px;
+      margin-left: 20px;
       display: flex;
       flex-direction: row;
       .text {
@@ -255,8 +298,10 @@ export default {
     display: flex;
     flex-direction: row;
     .titleText {
+      // border: 1px solid red;
       height: 40px;
       line-height: 40px;
+      padding-inline: 10px;
       width: 100px;
       font-size: 18px;
     }

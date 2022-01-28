@@ -8,6 +8,7 @@
           class="input"
           v-model="lessonName"
           size="large"
+          placeholder="请输入"
         ></el-input>
       </div>
       <div class="inputBox">
@@ -17,6 +18,7 @@
           class="input"
           v-model="lessonName"
           size="large"
+          placeholder="请输入"
         ></el-input>
       </div>
       <div class="btnBox">
