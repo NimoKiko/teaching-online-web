@@ -2,14 +2,24 @@
   <el-container class="container">
     <el-header class="header">
       <div class="title">后台管理</div>
-      <div class="pageTitle">{{pageTitle}}</div>
+      <div class="pageTitle">{{ pageTitle }}</div>
+      <el-dropdown class="personal" trigger="click">
+        <span class="el-dropdown-link">
+          admin
+          <el-icon class="el-icon--right">
+            <arrow-down />
+          </el-icon>
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </el-header>
     <el-container class="mainContainer">
       <el-aside class="aside">
-        <el-menu
-          class="el-menu-vertical-demo"
-          @select="handleSelect"
-        >
+        <el-menu class="el-menu-vertical-demo" @select="handleSelect">
           <el-menu-item index="1">
             <span>课程管理</span>
           </el-menu-item>
@@ -30,39 +40,47 @@
 
 <script>
 import {
-  Location,
-  Document,
-  Menu as IconMenu,
-  Setting,
-} from "@element-plus/icons-vue";
+  ArrowDown,
+  CircleCheck,
+  Check,
+  CirclePlus,
+  CirclePlusFilled,
+  Plus,
+} from '@element-plus/icons-vue'
 export default {
   data() {
     return {
-      pageTitle:"课程管理",
+      pageTitle: "课程管理",
     };
   },
   methods: {
-    handleSelect(key,keyPath){
+    handleSelect(key, keyPath) {
       // console.log(key);
-      if(key == 1){
+      if (key == 1) {
         this.$router.push("/lesson");
         this.pageTitle = "课程管理";
       }
-      if(key == 2){
+      if (key == 2) {
         this.$router.push("/stdManage");
         this.pageTitle = "学生管理";
       }
-      if(key == 3){
+      if (key == 3) {
         this.$router.push("/teaManage");
         this.pageTitle = "教师管理";
       }
+    },
+    logout(){
+      self.location = "/login";
     }
   },
+  components: {
+    ArrowDown
+  }
 };
 </script>
 
 <style scoped lang="less">
-body{
+body {
   margin: 0;
 }
 .container {
@@ -80,6 +98,7 @@ body{
     // background-color: #b3c0d1;
     background-color: white;
     display: flex;
+    position: relative;
     // border: 1px solid red;
     .title {
       // border: 1px solid red;
@@ -97,6 +116,11 @@ body{
       margin-left: 50px;
       // margin-left: 300px;
       // border: 1px solid red;
+    }
+    .personal {
+      position: absolute;
+      right: 30px;
+      top: 35px;
     }
   }
   .mainContainer {
