@@ -39,7 +39,9 @@
       </div>
     </div>
     <div class="middleBox">
-      <el-button type="text" :icon="Plus" @click="addLesson"><el-icon><plus /></el-icon>添加学生</el-button>
+      <el-button type="text" :icon="Plus" @click="addLesson"
+        ><el-icon><plus /></el-icon>添加学生</el-button
+      >
     </div>
     <div class="table">
       <el-table
@@ -54,12 +56,17 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="name"
+          prop="stdname"
           label="学生姓名"
           width="180"
           align="center"
         />
-        <el-table-column prop="id" label="学号" width="180" align="center" />
+        <el-table-column
+          prop="stdnum"
+          label="学号"
+          width="180"
+          align="center"
+        />
         <el-table-column
           prop="dept"
           label="所属院系"
@@ -85,6 +92,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        class="page"
+        background
+        layout="prev, pager, next, total"
+        @current-change="handlePageChange"
+        :total="total"
+        :page-size="10"
+      >
+      </el-pagination>
     </div>
     <!-- 新增的弹框 -->
     <el-dialog
@@ -92,7 +108,6 @@
       title="新增学生"
       center
       width="25%"
-      :before-close="handleClose"
     >
       <div class="titleBox">
         <div class="titleText">学生姓名</div>
@@ -140,7 +155,6 @@
       title="编辑"
       center
       width="25%"
-      :before-close="handleClose"
     >
       <div class="titleBox">
         <div class="titleText">学生姓名</div>
@@ -185,30 +199,16 @@
 </template>
 
 <script>
-import {Plus} from '@element-plus/icons'
+import { Plus } from "@element-plus/icons";
 export default {
   data() {
     return {
       addStudentDialogVisible: false,
       editStudentDialogVisible: false,
       lessonName: "",
-      tableData: [
-        {
-          id: 1,
-          name: "Tom",
-          dept: "计算机与信息工程学院",
-        },
-        {
-          id: 2,
-          name: "Marry",
-          dept: "经管学院",
-        },
-        {
-          id: 3,
-          name: "Danny",
-          dept: "计算机与信息工程学院",
-        },
-      ],
+      tableData: [],
+      total: 0,
+      pageNum:1,
       options: [
         {
           value: "1",
@@ -223,7 +223,7 @@ export default {
           label: "文理学部",
         },
       ],
-      value:""
+      value: "",
     };
   },
   methods: {
@@ -249,10 +249,29 @@ export default {
     editStudentInfo() {},
     // 保存新增信息
     saveStudent() {},
+    //处理分页
+    handlePageChange(val) {
+      console.log(val);
+      this.pageNum = val;
+      this.load();
+    },
+    //获取列表数据的接口
+    load() {
+      fetch("http://localhost:9090/std/page?pageNum="+this.pageNum+"&pageSize=10")
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          this.tableData = res.data;
+          this.total = res.total;
+        });
+    },
+  },
+  mounted () {
+    this.load();
   },
   components: {
-    Plus
-  }
+    Plus,
+  },
 };
 </script>
 
@@ -296,6 +315,11 @@ export default {
   .table {
     margin-left: 30px;
     width: 70%;
+
+    .page {
+      margin-left: 300px;
+      margin-top: 50px;
+    }
   }
   .titleBox {
     margin-left: 60px;
