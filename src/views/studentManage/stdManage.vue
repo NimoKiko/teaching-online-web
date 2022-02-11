@@ -208,7 +208,7 @@ export default {
       lessonName: "",
       tableData: [],
       total: 0,
-      pageNum:1,
+      pageNum: 1,
       options: [
         {
           value: "1",
@@ -257,16 +257,21 @@ export default {
     },
     //获取列表数据的接口
     load() {
-      fetch("http://localhost:9090/std/page?pageNum="+this.pageNum+"&pageSize=10")
-        .then((res) => res.json())
-        .then((res) => {
-          console.log(res);
-          this.tableData = res.data;
-          this.total = res.total;
-        });
+      this.axios({
+        url: "http://localhost:9090/std/page",
+        methods: "GET",
+        params: {
+          pageNum: this.pageNum,
+          pageSize: 10,
+        },
+      }).then((res) => {
+        console.log(res);
+        this.tableData = res.data.records;
+        this.total = res.data.total;
+      });
     },
   },
-  mounted () {
+  mounted() {
     this.load();
   },
   components: {
