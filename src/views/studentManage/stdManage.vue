@@ -39,13 +39,13 @@
       </div>
     </div>
     <div class="middleBox">
-      <el-button type="text" :icon="Plus" @click="addLesson"
+      <el-button type="text" @click="addLesson"
         ><el-icon><plus /></el-icon>添加学生</el-button
       >
     </div>
     <div class="table">
       <el-table
-        :data="tableData"
+        :data="stdList"
         style="width: 100%"
         highlight-current-row
         border
@@ -200,6 +200,8 @@
 
 <script>
 import { Plus } from "@element-plus/icons";
+import { mapState } from "vuex";
+import Vue from "vue";
 export default {
   data() {
     return {
@@ -239,7 +241,8 @@ export default {
     handleDelete() {},
     // 显示新增课程弹框
     addLesson() {
-      this.addStudentDialogVisible = true;
+      // this.addStudentDialogVisible = true;
+      console.log(this.stdList);
     },
     // 显示编辑弹框
     handleEdit() {
@@ -257,22 +260,20 @@ export default {
     },
     //获取列表数据的接口
     load() {
-      this.axios({
-        url: "http://localhost:9090/std/page",
-        methods: "GET",
-        params: {
-          pageNum: this.pageNum,
-          pageSize: 10,
-        },
-      }).then((res) => {
-        console.log(res);
-        this.tableData = res.data.records;
-        this.total = res.data.total;
-      });
+      let params = {
+        pageNum: this.pageNum,
+        pageSize: 10,
+      };
+      this.$store.dispatch("getStudnetList", params);
     },
   },
   mounted() {
     this.load();
+  },
+  computed: {
+    ...mapState({
+      stdList: (state) => state.final.stdList,
+    }),
   },
   components: {
     Plus,
