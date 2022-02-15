@@ -263,6 +263,9 @@ export default {
       console.log(row);
       this.$store.dispatch("deleteStudent",{stdnum:row.stdnum}).then( res => {
         console.log(res);
+        if(res.data == true) {
+          this.load();
+        }
       })
     },
     //数据处理函数
