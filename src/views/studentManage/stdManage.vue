@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="middleBox">
-      <el-button type="text" @click="addLesson"
+      <el-button type="text" @click="addStudent"
         ><el-icon><plus /></el-icon>添加学生</el-button
       >
     </div>
@@ -67,6 +67,7 @@
           width="180"
           align="center"
         />
+        <el-table-column prop="sex" label="性别" width="100" align="center" />
         <el-table-column
           prop="dept"
           label="所属院系"
@@ -114,7 +115,7 @@
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="addParams.stdname"
           size="large"
           placeholder="请输入"
         ></el-input>
@@ -124,14 +125,18 @@
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="addParams.stdnum"
           size="large"
           placeholder="请输入"
         ></el-input>
       </div>
       <div class="titleBox" style="margin-top: 20px">
         <div class="titleText" style="width: 75px">所属院系</div>
-        <el-select v-model="value" placeholder="请选择院系" size="large">
+        <el-select
+          v-model="addParams.dept"
+          placeholder="请选择院系"
+          size="large"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -161,7 +166,7 @@
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="editParams.stdname"
           size="large"
           placeholder="请输入"
         ></el-input>
@@ -171,14 +176,18 @@
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="editParams.stdnum"
           size="large"
           placeholder="请输入"
         ></el-input>
       </div>
       <div class="titleBox" style="margin-top: 20px">
         <div class="titleText" style="width: 75px">所属院系</div>
-        <el-select v-model="value" placeholder="请选择院系" size="large">
+        <el-select
+          v-model="editParams.dept"
+          placeholder="请选择院系"
+          size="large"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -226,6 +235,18 @@ export default {
         },
       ],
       value: "",
+      addParams: {
+        stdname: "",
+        stdnum: null,
+        dept: null,
+        type: "学生",
+      },
+      editParams: {
+        stdname: "",
+        stdnum: null,
+        dept: null,
+        type: "学生",
+      },
     };
   },
   methods: {
@@ -238,20 +259,63 @@ export default {
     // 处理上传资料
     handleUpload() {},
     // 删除此条
-    handleDelete() {},
+    handleDelete(row) {
+      console.log(row);
+      this.$store.dispatch("deleteStudent",{stdnum:row.stdnum}).then( res => {
+        console.log(res);
+      })
+    },
+    //数据处理函数
+    dataOperation(params) {
+      if (params.dept == "1") {
+        params.dept = "计算机与信息工程学院";
+      } else if (params.dept == "2") {
+        params.dept = "经管学院";
+      } else if (params.dept == "3") {
+        params.dept = "文理学部";
+      }
+      return params;
+    },
     // 显示新增课程弹框
-    addLesson() {
-      // this.addStudentDialogVisible = true;
-      console.log(this.stdList);
+    addStudent() {
+      this.addStudentDialogVisible = true;
+    },
+    // 保存新增信息
+    saveStudent() {
+      let params = this.dataOperation(this.addParams);
+      // console.log(params);
+      this.$store.dispatch("saveOrUpdate", params).then((res) => {
+        if (res.data == true) {
+          this.addStudentDialogVisible = false;
+          this.load();
+        }
+      });
     },
     // 显示编辑弹框
-    handleEdit() {
+    handleEdit(val) {
       this.editStudentDialogVisible = true;
+      console.log(val);
+      this.editParams.stdname = val.stdname;
+      this.editParams.stdnum = val.stdnum;
+      if (val.dept == "计算机与信息工程学院") {
+        this.editParams.dept = "1";
+      } else if (val.dept == "经管学院") {
+        this.editParams.dept = "2";
+      } else if (val.dept == "文理学部") {
+        this.editParams.dept = "3";
+      }
     },
     // 保存编辑信息
-    editStudentInfo() {},
-    // 保存新增信息
-    saveStudent() {},
+    editStudentInfo() {
+      let params = this.dataOperation(this.editParams);
+      // console.log(params);
+      this.$store.dispatch("saveOrUpdate", params).then((res) => {
+        if (res.data == true) {
+          this.editStudentDialogVisible = false;
+          this.load();
+        }
+      });
+    },
     //处理分页
     handlePageChange(val) {
       console.log(val);

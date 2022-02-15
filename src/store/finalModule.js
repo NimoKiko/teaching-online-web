@@ -1,5 +1,7 @@
 import {
-  getStudnetList
+  getStudnetList,
+  saveOrUpdate,
+  deleteStudent
 } from "./final";
 
 const state = {
@@ -11,6 +13,14 @@ const actions = {
     p.then(res => {
       commit("GET_STUDENT_LIST", res);
     });
+  },
+  saveOrUpdate({ commit }, data) {
+    let p = saveOrUpdate(data);
+    return p;
+  },
+  deleteStudent({ commit }, data) {
+    let p = deleteStudent(data);
+    return p;
   },
 };
 const mutations  = {
