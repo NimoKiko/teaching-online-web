@@ -6,9 +6,10 @@
         <el-input
           type="text"
           class="input"
-          v-model="lessonName"
+          v-model="queryParams.teaname"
           size="large"
           placeholder="请输入"
+          clearable
         ></el-input>
       </div>
       <div class="inputBox">
@@ -16,17 +17,19 @@
         <el-input
           type="text"
           class="input"
-          v-model="lessonName"
+          v-model="queryParams.worknum"
           size="large"
           placeholder="请输入"
+          clearable
         ></el-input>
       </div>
       <div class="inputBox">
         <div class="text" style="width: 125px">所属院系/部门</div>
         <el-select
-          v-model="department"
+          v-model="queryParams.dept"
           placeholder="请选择院系/部门"
           size="large"
+          clearable
         >
           <el-option
             v-for="item in departmentList"
@@ -39,7 +42,12 @@
       </div>
       <div class="inputBox">
         <div class="text" style="width: 80px">教师类型</div>
-        <el-select v-model="teacherType" placeholder="请选择类型" size="large">
+        <el-select
+          clearable
+          v-model="queryParams.type"
+          placeholder="请选择类型"
+          size="large"
+        >
           <el-option
             v-for="item in teacherTypeList"
             :key="item.value"
@@ -50,37 +58,30 @@
         </el-select>
       </div>
       <div class="btnBox">
-        <el-button type="primary">查询</el-button>
-        <el-button type="info">重置</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
+        <el-button type="info" @click="reset">重置</el-button>
       </div>
     </div>
     <div class="middleBox">
-      <el-button type="text" :icon="Plus" @click="addTeacher"><el-icon><plus /></el-icon>添加教师</el-button>
+      <el-button type="text" @click="addTeacher"
+        ><el-icon><plus /></el-icon>添加教师</el-button
+      >
     </div>
     <div class="table">
-      <el-table
-        :data="tableData"
-        style="width: 100%"
-        highlight-current-row
-        border
-      >
+      <el-table :data="teaList" highlight-current-row border>
         <el-table-column
-          type="selection"
-          width="70"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          prop="name"
+          prop="teaname"
           label="教师姓名"
           width="180"
           align="center"
         />
         <el-table-column
-          prop="id"
+          prop="worknum"
           label="教师工号"
           width="180"
           align="center"
         />
+        <el-table-column prop="sex" label="性别" width="180" align="center" />
         <el-table-column
           prop="dept"
           label="所属院系/部门"
@@ -112,6 +113,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        class="page"
+        background
+        layout="prev, pager, next, total"
+        @current-change="handlePageChange"
+        :total="pagination.total"
+        :page-size="10"
+      >
+      </el-pagination>
     </div>
     <!-- 新增的弹框 -->
     <el-dialog
@@ -119,14 +129,13 @@
       title="新增教师"
       center
       width="25%"
-      :before-close="handleClose"
     >
       <div class="titleBox">
         <div class="titleText">教师姓名</div>
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="addParams.teaname"
           size="large"
           placeholder="请输入"
         ></el-input>
@@ -136,14 +145,18 @@
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="addParams.worknum"
           size="large"
           placeholder="请输入"
         ></el-input>
       </div>
-      <div class="titleBox" style="margin-top: 20px;margin-left:45px">
+      <div class="titleBox" style="margin-top: 20px; margin-left: 45px">
         <div class="titleText" style="width: 90px">所属院系/部门</div>
-        <el-select v-model="department" placeholder="请选择院系/部门" size="large">
+        <el-select
+          v-model="addParams.dept"
+          placeholder="请选择院系/部门"
+          size="large"
+        >
           <el-option
             v-for="item in departmentList"
             :key="item.value"
@@ -155,7 +168,11 @@
       </div>
       <div class="titleBox" style="margin-top: 20px">
         <div class="titleText" style="width: 75px">教师类型</div>
-        <el-select v-model="teacherType" placeholder="请选择院系" size="large">
+        <el-select
+          v-model="addParams.type"
+          placeholder="请选择类型"
+          size="large"
+        >
           <el-option
             v-for="item in teacherTypeList"
             :key="item.value"
@@ -164,6 +181,17 @@
           >
           </el-option>
         </el-select>
+      </div>
+      <div class="titleBox" style="margin-top: 20px">
+        <div class="titleText" style="width: 75px">性别</div>
+        <div>
+          <el-radio v-model="addParams.sex" label="男" size="large"
+            >男</el-radio
+          >
+          <el-radio v-model="addParams.sex" label="女" size="large"
+            >女</el-radio
+          >
+        </div>
       </div>
       <template #footer>
         <span class="dialog-footer">
@@ -179,14 +207,13 @@
       title="编辑"
       center
       width="25%"
-      :before-close="handleClose"
     >
       <div class="titleBox">
         <div class="titleText">教师姓名</div>
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="editParams.teaname"
           size="large"
           placeholder="请输入"
         ></el-input>
@@ -196,14 +223,18 @@
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="editParams.worknum"
           size="large"
           placeholder="请输入"
         ></el-input>
       </div>
-      <div class="titleBox" style="margin-top: 20px;margin-left:45px">
+      <div class="titleBox" style="margin-top: 20px; margin-left: 45px">
         <div class="titleText" style="width: 90px">所属院系/部门</div>
-        <el-select v-model="department" placeholder="请选择院系/部门" size="large">
+        <el-select
+          v-model="editParams.dept"
+          placeholder="请选择院系/部门"
+          size="large"
+        >
           <el-option
             v-for="item in departmentList"
             :key="item.value"
@@ -215,7 +246,11 @@
       </div>
       <div class="titleBox" style="margin-top: 20px">
         <div class="titleText" style="width: 75px">教师类型</div>
-        <el-select v-model="teacherType" placeholder="请选择院系" size="large">
+        <el-select
+          v-model="editParams.type"
+          placeholder="请选择院系"
+          size="large"
+        >
           <el-option
             v-for="item in teacherTypeList"
             :key="item.value"
@@ -224,6 +259,17 @@
           >
           </el-option>
         </el-select>
+      </div>
+      <div class="titleBox" style="margin-top: 20px">
+        <div class="titleText" style="width: 75px">性别</div>
+        <div>
+          <el-radio v-model="editParams.sex" label="男" size="large"
+            >男</el-radio
+          >
+          <el-radio v-model="editParams.sex" label="女" size="large"
+            >女</el-radio
+          >
+        </div>
       </div>
       <template #footer>
         <span class="dialog-footer">
@@ -236,97 +282,177 @@
 </template>
 
 <script>
-import {Plus} from '@element-plus/icons'
+import { ElMessage, Plus } from "@element-plus/icons";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
       addTeacherDialogVisible: false,
       editTeacherDialogVisible: false,
       lessonName: "",
-      tableData: [
-        {
-          id: 1,
-          name: "Tom",
-          dept: "计算机与信息工程学院",
-          type: "教师",
-        },
-        {
-          id: 2,
-          name: "Marry",
-          dept: "经管学院",
-          type: "辅导员",
-        },
-        {
-          id: 3,
-          name: "Danny",
-          dept: "教务处",
-          type: "教师",
-        },
-      ],
       departmentList: [
         {
-          value: "1",
+          value: "计算机与信息工程学院",
           label: "计算机与信息工程学院",
         },
         {
-          value: "2",
+          value: "经管学院",
           label: "经管学院",
         },
         {
-          value: "3",
+          value: "文理学部",
           label: "文理学部",
         },
         {
-          value: "4",
+          value: "教务处",
           label: "教务处",
         },
       ],
       teacherTypeList: [
         {
-          value: "1",
+          value: "教师",
           label: "教师",
         },
         {
-          value: "2",
+          value: "辅导员",
           label: "辅导员",
         },
       ],
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        teaname: "",
+        worknum: "",
+        dept: "",
+        type: "",
+      },
+      addParams: {
+        teaname: "",
+        worknum: "",
+        dept: null,
+        sex: "男",
+        type: "教师",
+      },
+      editParams: {
+        id: null,
+        teaname: "",
+        worknum: "",
+        dept: null,
+        sex: "男",
+        type: "教师",
+      },
       teacherType: "",
       department: "",
     };
   },
   methods: {
-    // 处理编辑
-    handleEdit() {},
-    // 打开详情页面
-    gotoDetail() {
-      this.$router.push("/lessonDetail");
+    // 查询
+    query() {
+      console.log(this.queryParams);
+      this.load();
     },
-    // 处理上传资料
-    handleUpload() {},
-    // 删除此条
-    handleDelete() {},
+    // 重置
+    reset() {
+      this.queryParams = {
+        pageNum: 1,
+        pageSize: 10,
+        teaname: "",
+        worknum: "",
+        dept: "",
+        type: "",
+      };
+      this.load();
+    },
     // 显示新增课程弹框
     addTeacher() {
       this.addTeacherDialogVisible = true;
     },
+    // 保存新增信息
+    saveTeacher() {
+      console.log(this.addParams);
+      this.$store.dispatch("saveOrUpdateTea", this.addParams).then((res) => {
+        console.log(res);
+        if (res.data == true) {
+          this.$message.success("添加成功！");
+          this.addTeacherDialogVisible = false;
+          this.addParams = {
+            teaname: "",
+            worknum: "",
+            dept: null,
+            sex: "男",
+            type: "教师",
+          };
+          this.load();
+        } else {
+          this.$message.error("添加失败！");
+        }
+      });
+    },
     // 显示编辑弹框
-    handleEdit() {
+    handleEdit(row) {
       this.editTeacherDialogVisible = true;
+      this.editParams.id = row.id;
+      this.editParams.teaname = row.teaname;
+      this.editParams.worknum = row.worknum;
+      this.editParams.dept = row.dept;
+      this.editParams.sex = row.sex;
+      this.editParams.type = row.type;
     },
     // 保存编辑信息
-    editTeachertInfo() {},
-    // 保存新增信息
-    saveTeacher() {},
+    editTeachertInfo() {
+      console.log(this.editParams);
+      this.$store.dispatch("saveOrUpdateTea", this.editParams).then((res) => {
+        console.log(res);
+        if (res.data == true) {
+          this.$message.success("修改成功!");
+          this.editTeacherDialogVisible = false;
+          this.load();
+        } else {
+          this.$message.error("修改失败！");
+        }
+      });
+    },
+    // 删除此条
+    handleDelete(row) {
+      this.$store.dispatch("deleteTeacher", { id: row.id }).then((res) => {
+        console.log(res);
+        if (res.data == true) {
+          this.$message.success("删除成功！");
+          this.load();
+        } else {
+          this.$message.error("删除失败！");
+        }
+      });
+    },
+    //处理分页
+    handlePageChange(val) {
+      console.log(val);
+      this.queryParams.pageNum = val;
+      this.load();
+    },
+    // 获取教师列表
+    load() {
+      this.$store.dispatch("getTeacherList", this.queryParams);
+    },
+  },
+  mounted() {
+    this.load();
+  },
+  computed: {
+    ...mapState({
+      teaList: (state) => state.final.teaList,
+      pagination: (state) => state.final.teaPage,
+    }),
   },
   components: {
-    Plus
-  }
+    Plus,
+  },
 };
 </script>
 
 <style lang="less" scoped>
 .container {
+  // border: 1px solid red;
   width: 100%;
   height: 95%;
   margin-top: 42.179px;
@@ -363,8 +489,16 @@ export default {
     margin-left: 30px;
   }
   .table {
+    // border: 1px solid red;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-left: 30px;
     width: 70%;
+
+    .page {
+      margin-top: 20px;
+    }
   }
   .titleBox {
     margin-left: 60px;

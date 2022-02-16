@@ -51,11 +51,7 @@
       >
     </div>
     <div class="table">
-      <el-table
-        :data="stdList"
-        highlight-current-row
-        border
-      >
+      <el-table :data="stdList" highlight-current-row border>
         <el-table-column
           prop="stdname"
           label="学生姓名"
@@ -231,7 +227,7 @@
 </template>
 
 <script>
-import { Plus } from "@element-plus/icons";
+import { Plus, ElMessage } from "@element-plus/icons";
 import { mapState } from "vuex";
 import Vue from "vue";
 export default {
@@ -285,7 +281,7 @@ export default {
   methods: {
     // 查询按钮
     query() {
-      console.log(this.queryParams);
+      // console.log(this.queryParams);
       this.load();
     },
     // 处理重置按钮
@@ -299,47 +295,19 @@ export default {
       };
       this.load();
     },
-    // 处理编辑
-    handleEdit() {},
-    // 打开详情页面
-    gotoDetail() {
-      this.$router.push("/lessonDetail");
-    },
-    // 处理上传资料
-    handleUpload() {},
-    // 删除此条
-    handleDelete(row) {
-      console.log(row);
-      this.$store.dispatch("deleteStudent", { id: row.id }).then((res) => {
-        console.log(res);
-        if (res.data == true) {
-          this.load();
-        }
-      });
-    },
-    //数据处理函数
-    dataOperation(params) {
-      if (params.dept == "1") {
-        params.dept = "计算机与信息工程学院";
-      } else if (params.dept == "2") {
-        params.dept = "经管学院";
-      } else if (params.dept == "3") {
-        params.dept = "文理学部";
-      }
-      return params;
-    },
     // 显示新增课程弹框
     addStudent() {
       this.addStudentDialogVisible = true;
     },
     // 保存新增信息
     saveStudent() {
-      let params = this.dataOperation(this.addParams);
-      // console.log(params);
-      this.$store.dispatch("saveOrUpdate", params).then((res) => {
+      this.$store.dispatch("saveOrUpdate", this.addParams).then((res) => {
         if (res.data == true) {
+          this.$message.success("添加成功！");
           this.addStudentDialogVisible = false;
           this.load();
+        } else {
+          this.$message.error("添加失败！");
         }
       });
     },
@@ -349,13 +317,7 @@ export default {
       console.log(val);
       this.editParams.stdname = val.stdname;
       this.editParams.stdnum = val.stdnum;
-      if (val.dept == "计算机与信息工程学院") {
-        this.editParams.dept = "1";
-      } else if (val.dept == "经管学院") {
-        this.editParams.dept = "2";
-      } else if (val.dept == "文理学部") {
-        this.editParams.dept = "3";
-      }
+      this.editParams.dept = val.dept;
       this.editParams.sex = val.sex;
       this.editParams.id = val.id;
     },
@@ -365,8 +327,24 @@ export default {
       // console.log(params);
       this.$store.dispatch("saveOrUpdate", params).then((res) => {
         if (res.data == true) {
+          this.$message.success("修改成功！");
           this.editStudentDialogVisible = false;
           this.load();
+        } else {
+          this.$message.error("修改失败");
+        }
+      });
+    },
+    // 删除此条
+    handleDelete(row) {
+      console.log(row);
+      this.$store.dispatch("deleteStudent", { id: row.id }).then((res) => {
+        console.log(res);
+        if (res.data == true) {
+          this.$message.success("删除成功！");
+          this.load();
+        } else {
+          this.$message.error("删除失败！");
         }
       });
     },
@@ -378,10 +356,6 @@ export default {
     },
     //获取列表数据的接口
     load() {
-      let params = {
-        pageNum: this.pageNum,
-        pageSize: 10,
-      };
       this.$store.dispatch("getStudnetList", this.queryParams);
     },
   },
@@ -441,12 +415,14 @@ export default {
     margin-left: 30px;
   }
   .table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-left: 30px;
     width: 70%;
 
     .page {
-      margin-left: 300px;
-      margin-top: 50px;
+      margin-top: 20px;
     }
   }
   .titleBox {
@@ -461,9 +437,9 @@ export default {
       width: 100px;
       font-size: 18px;
     }
-    // /deep/ .el-input {
-    //   height: fit-content;
-    // }
+    /deep/ .el-input__inner {
+      width: 200px;
+    }
   }
 }
 </style>
