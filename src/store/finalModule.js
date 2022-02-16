@@ -5,7 +5,8 @@ import {
 } from "./final";
 
 const state = {
-  stdList:[]
+  stdList:[],
+  stdPage:{},
 };
 const actions = {
   getStudnetList({ commit }, data) {
@@ -27,6 +28,12 @@ const mutations  = {
   GET_STUDENT_LIST(state, res) {
     // console.log(res.data.records);
     state.stdList = res.data.records;
+    let pagination = {
+      page: res.data.pages,
+      total: res.data.total
+    }
+    console.log(pagination);
+    state.stdPage = pagination;
   },
 };
 export default({

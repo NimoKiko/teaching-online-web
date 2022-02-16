@@ -1,10 +1,17 @@
 import api from "./finalUrl";
 import axios from 'axios';
 
+// export function getStudnetList(params) {
+//   return axios({
+//     url: api.getStudnetList,
+//     params: params,
+//   });
+// }
 export function getStudnetList(params) {
   return axios({
     url: api.getStudnetList,
-    params: params,
+    data: params,
+    method:"post"
   });
 }
 export function saveOrUpdate(params) {

@@ -6,9 +6,10 @@
         <el-input
           type="text"
           class="input"
-          v-model="lessonName"
+          v-model="queryParams.stdname"
           size="large"
           placeholder="请输入"
+          clearable
         ></el-input>
       </div>
       <div class="inputBox">
@@ -16,14 +17,20 @@
         <el-input
           type="text"
           class="input"
-          v-model="lessonName"
+          v-model="queryParams.stdnum"
           size="large"
           placeholder="请输入"
+          clearable
         ></el-input>
       </div>
       <div class="inputBox">
         <div class="text" style="width: 80px">所属院系</div>
-        <el-select v-model="value" placeholder="请选择院系" size="large">
+        <el-select
+          v-model="queryParams.dept"
+          placeholder="请选择院系"
+          size="large"
+          clearable
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -34,8 +41,8 @@
         </el-select>
       </div>
       <div class="btnBox">
-        <el-button type="primary">查询</el-button>
-        <el-button type="info">重置</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
+        <el-button type="info" @click="reset">重置</el-button>
       </div>
     </div>
     <div class="middleBox">
@@ -46,15 +53,9 @@
     <div class="table">
       <el-table
         :data="stdList"
-        style="width: 100%"
         highlight-current-row
         border
       >
-        <el-table-column
-          type="selection"
-          width="70"
-          align="center"
-        ></el-table-column>
         <el-table-column
           prop="stdname"
           label="学生姓名"
@@ -71,7 +72,7 @@
         <el-table-column
           prop="dept"
           label="所属院系"
-          width="180"
+          width="200"
           align="center"
         />
         <el-table-column label="操作" align="center">
@@ -98,7 +99,7 @@
         background
         layout="prev, pager, next, total"
         @current-change="handlePageChange"
-        :total="total"
+        :total="pagination.total"
         :page-size="10"
       >
       </el-pagination>
@@ -145,6 +146,17 @@
           >
           </el-option>
         </el-select>
+      </div>
+      <div class="titleBox" style="margin-top: 20px">
+        <div class="titleText" style="width: 75px">性别</div>
+        <div>
+          <el-radio v-model="addParams.sex" label="男" size="large"
+            >男</el-radio
+          >
+          <el-radio v-model="addParams.sex" label="女" size="large"
+            >女</el-radio
+          >
+        </div>
       </div>
       <template #footer>
         <span class="dialog-footer">
@@ -197,6 +209,17 @@
           </el-option>
         </el-select>
       </div>
+      <div class="titleBox" style="margin-top: 20px">
+        <div class="titleText" style="width: 75px">性别</div>
+        <div>
+          <el-radio v-model="editParams.sex" label="男" size="large"
+            >男</el-radio
+          >
+          <el-radio v-model="editParams.sex" label="女" size="large"
+            >女</el-radio
+          >
+        </div>
+      </div>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="editStudentDialogVisible = false">取消</el-button>
@@ -222,34 +245,60 @@ export default {
       pageNum: 1,
       options: [
         {
-          value: "1",
+          value: "计算机与信息工程学院",
           label: "计算机与信息工程学院",
         },
         {
-          value: "2",
+          value: "经管学院",
           label: "经管学院",
         },
         {
-          value: "3",
+          value: "文理学部",
           label: "文理学部",
         },
       ],
       value: "",
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        stdname: "",
+        stdnum: "",
+        dept: "",
+      },
       addParams: {
         stdname: "",
         stdnum: null,
         dept: null,
+        sex: "男",
         type: "学生",
       },
       editParams: {
+        id: null,
         stdname: "",
         stdnum: null,
         dept: null,
+        sex: "男",
         type: "学生",
       },
     };
   },
   methods: {
+    // 查询按钮
+    query() {
+      console.log(this.queryParams);
+      this.load();
+    },
+    // 处理重置按钮
+    reset() {
+      this.queryParams = {
+        pageNum: 1,
+        pageSize: 10,
+        stdname: "",
+        stdnum: "",
+        dept: "",
+      };
+      this.load();
+    },
     // 处理编辑
     handleEdit() {},
     // 打开详情页面
@@ -261,12 +310,12 @@ export default {
     // 删除此条
     handleDelete(row) {
       console.log(row);
-      this.$store.dispatch("deleteStudent",{stdnum:row.stdnum}).then( res => {
+      this.$store.dispatch("deleteStudent", { id: row.id }).then((res) => {
         console.log(res);
-        if(res.data == true) {
+        if (res.data == true) {
           this.load();
         }
-      })
+      });
     },
     //数据处理函数
     dataOperation(params) {
@@ -307,6 +356,8 @@ export default {
       } else if (val.dept == "文理学部") {
         this.editParams.dept = "3";
       }
+      this.editParams.sex = val.sex;
+      this.editParams.id = val.id;
     },
     // 保存编辑信息
     editStudentInfo() {
@@ -322,7 +373,7 @@ export default {
     //处理分页
     handlePageChange(val) {
       console.log(val);
-      this.pageNum = val;
+      this.queryParams.pageNum = val;
       this.load();
     },
     //获取列表数据的接口
@@ -331,7 +382,7 @@ export default {
         pageNum: this.pageNum,
         pageSize: 10,
       };
-      this.$store.dispatch("getStudnetList", params);
+      this.$store.dispatch("getStudnetList", this.queryParams);
     },
   },
   mounted() {
@@ -340,6 +391,7 @@ export default {
   computed: {
     ...mapState({
       stdList: (state) => state.final.stdList,
+      pagination: (state) => state.final.stdPage,
     }),
   },
   components: {
@@ -369,6 +421,9 @@ export default {
         line-height: 40px;
         width: 100px;
         font-size: 18px;
+      }
+      /deep/ .el-input {
+        height: fit-content;
       }
       .input {
         margin-left: 8px;
@@ -406,9 +461,9 @@ export default {
       width: 100px;
       font-size: 18px;
     }
-    /deep/ .el-input__inner {
-      width: 200px;
-    }
+    // /deep/ .el-input {
+    //   height: fit-content;
+    // }
   }
 }
 </style>
