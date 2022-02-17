@@ -55,3 +55,27 @@ export function deleteTeacher(data) {
     method: "delete"
   });
 }
+//获取课程列表
+export function getLessonList(params) {
+  return axios({
+    url: api.getLessonList,
+    data: params,
+    method:"post"
+  });
+}
+//更新或添加课程列表
+export function saveOrUpdateLesson(params) {
+  return axios({
+    url: api.saveOrUpdateLesson,
+    data: params,
+    method:"post"
+  });
+}
+//删除课程
+export function delLesson(data) {
+  return axios({
+    url: api.delLesson,
+    params: data,
+    method: "delete"
+  });
+}

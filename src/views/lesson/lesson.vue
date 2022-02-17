@@ -6,9 +6,10 @@
         <el-input
           type="text"
           class="input"
-          v-model="lessonName"
+          v-model="queryParams.lessonname"
           size="large"
           placeholder="请输入"
+          clearable
         ></el-input>
       </div>
       <div class="inputBox">
@@ -16,44 +17,47 @@
         <el-input
           type="text"
           class="input"
-          v-model="lessonName"
+          v-model="queryParams.teaname"
           size="large"
           placeholder="请输入"
         ></el-input>
       </div>
       <div class="btnBox">
-        <el-button type="primary">查询</el-button>
-        <el-button type="info">重置</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
+        <el-button type="info" @click="reset">重置</el-button>
       </div>
     </div>
     <div class="middleBox">
-      <el-button type="text" :icon="Plus" @click="addLesson"><el-icon><plus /></el-icon>新增课程</el-button>
+      <el-button type="text" @click="addLesson"
+        ><el-icon><plus /></el-icon>新增课程</el-button
+      >
     </div>
     <div class="table">
-      <el-table
-        :data="tableData"
-        style="width: 100%"
-        highlight-current-row
-        border
-      >
+      <el-table :data="lessonList" highlight-current-row border>
         <el-table-column
-          type="selection"
-          width="70"
+          prop="id"
+          label="课程编号"
+          width="100"
           align="center"
-        ></el-table-column>
+        />
         <el-table-column
-          prop="lessonName"
+          prop="lessonname"
           label="课程名称"
           width="180"
           align="center"
         />
         <el-table-column
-          prop="teacherName"
+          prop="teaname"
           label="负责教师"
           width="180"
           align="center"
         />
-        <el-table-column prop="stdNum" label="学生人数" align="center" />
+        <el-table-column
+          prop="total"
+          label="学生人数"
+          width="180"
+          align="center"
+        />
         <el-table-column label="操作" align="center">
           <template v-slot="scope">
             <el-button
@@ -87,20 +91,29 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        class="page"
+        background
+        layout="prev, pager, next, total"
+        @current-change="handlePageChange"
+        :total="pagination.total"
+        :page-size="10"
+      >
+      </el-pagination>
     </div>
+    <!-- 新增弹框 -->
     <el-dialog
       v-model="addLessonDialogVisible"
       title="新增课程"
       center
       width="25%"
-      :before-close="handleClose"
     >
       <div class="titleBox">
         <div class="titleText">课程名称</div>
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="addParams.lessonname"
           size="large"
         ></el-input>
       </div>
@@ -109,16 +122,14 @@
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="addParams.teaname"
           size="large"
         ></el-input>
       </div>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="addLessonDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="saveLesson"
-            >确定</el-button
-          >
+          <el-button type="primary" @click="saveLesson">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -129,14 +140,13 @@
       title="编辑"
       center
       width="25%"
-      :before-close="handleClose"
     >
       <div class="titleBox">
         <div class="titleText">课程名称</div>
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="editParams.lessonname"
           size="large"
         ></el-input>
       </div>
@@ -145,16 +155,14 @@
         <el-input
           type="text"
           class="inputText"
-          v-model="lessonName"
+          v-model="editParams.teaname"
           size="large"
         ></el-input>
       </div>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="editLessonDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="editLessonInfo"
-            >确定</el-button
-          >
+          <el-button type="primary" @click="editLessonInfo">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -162,63 +170,128 @@
 </template>
 
 <script>
-import {Plus} from '@element-plus/icons'
+import { Plus, ElMessage } from "@element-plus/icons";
+import { mapState } from "vuex";
+import Vue from "vue";
 export default {
   data() {
     return {
       addLessonDialogVisible: false,
       editLessonDialogVisible: false,
-      lessonName: "",
-      tableData: [
-        {
-          lessonName: "企业及数据设计",
-          teacherName: "Tom",
-          stdNum: "5",
-        },
-        {
-          lessonName: "需求分析",
-          teacherName: "Kethy",
-          stdNum: "5",
-        },
-        {
-          lessonName: "C语言程序设计",
-          teacherName: "Alice",
-          stdNum: "5",
-        },
-      ],
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        lessonname: "",
+        teaname: "",
+      },
+      addParams: {
+        lessonname: "",
+        teaname: "",
+      },
+      editParams: {
+        id: null,
+        lessonname: "",
+        teaname: "",
+      },
     };
   },
   methods: {
-    // 处理编辑
-    handleEdit() {},
+    //查询按钮
+    query() {
+      this.load();
+    },
+    //重置按钮
+    reset() {
+      this.queryParams = {
+        pageNum: 1,
+        pageSize: 10,
+        lessonname: "",
+        teaname: "",
+      };
+      this.load();
+    },
+    // 显示新增课程弹框
+    addLesson() {
+      this.addLessonDialogVisible = true;
+    },
+    // 保存新增信息
+    saveLesson() {
+      console.log(this.addParams);
+      this.$store.dispatch("saveOrUpdateLesson", this.addParams).then((res) => {
+        if (res.data) {
+          this.addLessonDialogVisible = false;
+          this.load();
+          this.addParams = {
+            lessonname: "",
+            teaname: "",
+          };
+          this.$message.success("添加成功！");
+        } else {
+          this.$message.error("添加失败！");
+        }
+      });
+    },
+    // 显示编辑弹框
+    handleEdit(row) {
+      this.editParams.lessonname = row.lessonname;
+      this.editParams.teaname = row.teaname;
+      this.editParams.id = row.id;
+      this.editLessonDialogVisible = true;
+    },
+    // 保存编辑信息
+    editLessonInfo() {
+      console.log(this.editParams);
+      this.$store
+        .dispatch("saveOrUpdateLesson", this.editParams)
+        .then((res) => {
+          if (res.data) {
+            this.editLessonDialogVisible = false;
+            this.load();
+            this.$message.success("修改成功！");
+          } else {
+            this.$message.error("修改失败！");
+          }
+        });
+    },
+    // 删除此条
+    handleDelete(row) {
+      this.$store.dispatch("delLesson", { id: row.id }).then((res) => {
+        if (res.data) {
+          this.$message.success("删除成功！");
+          this.load();
+        } else {
+          this.$message.error("删除失败！");
+        }
+      });
+    },
+    handlePageChange(val) {
+      console.log(val);
+      this.queryParams.pageNum = val;
+      this.load();
+    },
     // 打开详情页面
     gotoDetail() {
       this.$router.push("/lessonDetail");
     },
     // 处理上传资料
     handleUpload() {},
-    // 删除此条
-    handleDelete() {},
-    // 显示新增课程弹框
-    addLesson() {
-      this.addLessonDialogVisible = true;
-    },
-    // 显示编辑弹框
-    handleEdit(){
-      this.editLessonDialogVisible = true;
-    },
-    // 保存编辑信息
-    editLessonInfo(){
-
-    },
-    // 保存新增信息
-    saveLesson(){
-
+    // 获取列表
+    load() {
+      this.$store.dispatch("getLessonList", this.queryParams);
     },
   },
+  mounted() {
+    this.load();
+  },
+  computed: {
+    ...mapState({
+      lessonList: (state) => state.final.lessonList,
+      pagination: (state) => state.final.lessonPage,
+    }),
+  },
   components: {
-    Plus
-  }
+    Plus,
+  },
 };
 </script>
 
@@ -260,8 +333,14 @@ export default {
     margin-left: 30px;
   }
   .table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-left: 30px;
     width: 70%;
+    .page {
+      margin-top: 20px;
+    }
   }
   .titleBox {
     margin-left: 60px;
