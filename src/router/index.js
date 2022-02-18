@@ -10,7 +10,7 @@ const routes = [
   { path: '/lesson', component: lesson },
   { path: '/stdManage', component: stdManage },
   { path: '/teaManage', component: teaManage },
-  { path: '/lessonDetail', component: lessonDetail },
+  { path: '/lessonDetail', name: 'detail', component: lessonDetail },
 ]
 
 const router = createRouter({

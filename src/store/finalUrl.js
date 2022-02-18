@@ -11,5 +11,6 @@ const api = {
   getLessonList: "http://localhost:9090/lesson/queryPage",
   saveOrUpdateLesson: "http://localhost:9090/lesson/saveOrUpdate",
   delLesson: "http://localhost:9090/lesson/delLesson",
+  getLessonStd:"http://localhost:9090/stdLesson/getStudent",
 }
 export default api;

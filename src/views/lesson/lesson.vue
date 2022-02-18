@@ -301,8 +301,18 @@ export default {
       this.load();
     },
     // 打开详情页面
-    gotoDetail() {
-      this.$router.push("/lessonDetail");
+    gotoDetail(row) {
+      console.log(row);
+      // this.$router.push("/lessonDetail");
+      this.$router.push({
+        name:'detail',
+        path:'/lessonDetail',
+        params:{
+          id: row.id,
+          teaname: row.teaname,
+          lessonname: row.lessonname
+        }
+      });
     },
     // 处理上传资料
     handleUpload() {},

@@ -305,6 +305,13 @@ export default {
         if (res.data == true) {
           this.$message.success("添加成功！");
           this.addStudentDialogVisible = false;
+          this.addParams = {
+            stdname: "",
+            stdnum: null,
+            dept: null,
+            sex: "男",
+            type: "学生",
+          };
           this.load();
         } else {
           this.$message.error("添加失败！");

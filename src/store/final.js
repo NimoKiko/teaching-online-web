@@ -79,3 +79,10 @@ export function delLesson(data) {
     method: "delete"
   });
 }
+//获取课程对应的学生表
+export function getLessonStd(params) {
+  return axios({
+    url: api.getLessonStd,
+    params: params,
+  });
+}

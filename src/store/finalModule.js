@@ -7,7 +7,8 @@ import {
   deleteTeacher,
   getLessonList,
   saveOrUpdateLesson,
-  delLesson
+  delLesson,
+  getLessonStd,
 } from "./final";
 
 const state = {
@@ -17,6 +18,7 @@ const state = {
   teaPage:{},
   lessonList:[],
   lessonPage:{},
+  lessonStdList:[],
 };
 const actions = {
   getStudnetList({ commit }, data) {
@@ -61,6 +63,12 @@ const actions = {
     let p = delLesson(data);
     return p;
   },
+  getLessonStd({ commit }, data) {
+    let p = getLessonStd(data);
+    p.then(res => {
+      commit("GET_LESSON_STUDENT", res);
+    });
+  },
 };
 const mutations  = {
   GET_STUDENT_LIST(state, res) {
@@ -92,6 +100,10 @@ const mutations  = {
     }
     console.log(pagination);
     state.lessonPage = pagination;
+  },
+  GET_LESSON_STUDENT(state, res) {
+    console.log(res.data);
+    state.lessonStdList = res.data;
   },
 
 };
