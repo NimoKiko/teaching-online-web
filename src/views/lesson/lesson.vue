@@ -119,12 +119,20 @@
       </div>
       <div class="titleBox" style="margin-top: 20px">
         <div class="titleText">负责教师</div>
-        <el-input
-          type="text"
-          class="inputText"
+        <el-select
           v-model="addParams.teaname"
+          class="inputText"
+          placeholder="请选择"
           size="large"
-        ></el-input>
+        >
+          <el-option
+            v-for="item in teaOption"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
       </div>
       <template #footer>
         <span class="dialog-footer">
@@ -152,12 +160,20 @@
       </div>
       <div class="titleBox" style="margin-top: 20px">
         <div class="titleText">负责教师</div>
-        <el-input
-          type="text"
-          class="inputText"
+        <el-select
           v-model="editParams.teaname"
+          class="inputText"
+          placeholder="请选择"
           size="large"
-        ></el-input>
+        >
+          <el-option
+            v-for="item in teaOption"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
       </div>
       <template #footer>
         <span class="dialog-footer">
@@ -193,6 +209,7 @@ export default {
         lessonname: "",
         teaname: "",
       },
+      teaOption: [],
     };
   },
   methods: {
@@ -213,6 +230,20 @@ export default {
     // 显示新增课程弹框
     addLesson() {
       this.addLessonDialogVisible = true;
+      console.log(this.teaList);
+      let list = [];
+      for (let item of this.teaList) {
+        console.log(item);
+        let temp = {
+          label: "",
+          value: "",
+        };
+        temp.label = item.teaname;
+        temp.value = item.teaname;
+        list.push(temp);
+      }
+      // console.log(list);
+      this.teaOption = list;
     },
     // 保存新增信息
     saveLesson() {
@@ -282,11 +313,21 @@ export default {
   },
   mounted() {
     this.load();
+    let params = {
+      pageNum: 1,
+      pageSize: 100,
+      teaname: "",
+      worknum: "",
+      dept: "",
+      type: "",
+    };
+    this.$store.dispatch("getTeacherList", params);
   },
   computed: {
     ...mapState({
       lessonList: (state) => state.final.lessonList,
       pagination: (state) => state.final.lessonPage,
+      teaList: (state) => state.final.teaList,
     }),
   },
   components: {
@@ -351,6 +392,9 @@ export default {
       line-height: 40px;
       width: 100px;
       font-size: 18px;
+    }
+    /deep/ .el-input--large {
+      width: 200px;
     }
     /deep/ .el-input__inner {
       width: 200px;
