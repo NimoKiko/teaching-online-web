@@ -86,3 +86,49 @@ export function getLessonStd(params) {
     params: params,
   });
 }
+//获取课程对应的树结构
+export function getTree(params) {
+  return axios({
+    url: api.getTree,
+    params: params,
+  });
+}
+//新增大章/小节
+export function addSection(params) {
+  return axios({
+    url: api.addSection,
+    data: params,
+    method:"post"
+  });
+}
+//删除节点
+export function delNode(data) {
+  return axios({
+    url: api.delNode,
+    params: data,
+    method: "delete"
+  });
+}
+//获取作业列表
+export function getTask(params) {
+  return axios({
+    url: api.getTask,
+    params: params,
+  });
+}
+//新增或修改作业
+export function saveOrEditTask(params) {
+  return axios({
+    url: api.saveOrEditTask,
+    data: params,
+    method:"post"
+  });
+}
+//删除节点
+export function delTask(data) {
+  return axios({
+    url: api.delTask,
+    params: data,
+    method: "delete"
+  });
+}

@@ -48,7 +48,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$route.params);
+    // console.log(this.$route.params);
     let params = this.$route.params;
     this.lessonname = params.lessonname;
     this.teaname = params.teaname;

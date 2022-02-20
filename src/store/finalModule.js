@@ -9,16 +9,24 @@ import {
   saveOrUpdateLesson,
   delLesson,
   getLessonStd,
+  getTree,
+  addSection,
+  delNode,
+  getTask,
+  saveOrEditTask,
+  delTask,
 } from "./final";
 
 const state = {
-  stdList:[],
-  stdPage:{},
-  teaList:[],
-  teaPage:{},
-  lessonList:[],
-  lessonPage:{},
-  lessonStdList:[],
+  stdList: [],
+  stdPage: {},
+  teaList: [],
+  teaPage: {},
+  lessonList: [],
+  lessonPage: {},
+  lessonStdList: [],
+  tree: [],
+  taskList:[],
 };
 const actions = {
   getStudnetList({ commit }, data) {
@@ -69,8 +77,36 @@ const actions = {
       commit("GET_LESSON_STUDENT", res);
     });
   },
+  getTree({ commit }, data) {
+    let p = getTree(data);
+    p.then(res => {
+      commit("GET_TREE", res);
+    });
+  },
+  addSection({ commit }, data) {
+    let p = addSection(data);
+    return p;
+  },
+  delNode({ commit }, data) {
+    let p = delNode(data);
+    return p;
+  },
+  getTask({ commit }, data) {
+    let p = getTask(data);
+    p.then(res => {
+      commit("GET_TASK_LIST", res);
+    });
+  },
+  saveOrEditTask({ commit }, data) {
+    let p = saveOrEditTask(data);
+    return p;
+  },
+  delTask({ commit }, data) {
+    let p = delTask(data);
+    return p;
+  },
 };
-const mutations  = {
+const mutations = {
   GET_STUDENT_LIST(state, res) {
     // console.log(res.data.records);
     state.stdList = res.data.records;
@@ -102,12 +138,19 @@ const mutations  = {
     state.lessonPage = pagination;
   },
   GET_LESSON_STUDENT(state, res) {
-    console.log(res.data);
+    // console.log(res.data);
     state.lessonStdList = res.data;
   },
-
+  GET_TREE(state, res) {
+    // console.log(res.data);
+    state.tree = res.data;
+  },
+  GET_TASK_LIST(state, res) {
+    console.log(res.data);
+    state.taskList = res.data;
+  },
 };
-export default({
+export default ({
   state,
   actions,
   mutations

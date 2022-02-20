@@ -12,5 +12,11 @@ const api = {
   saveOrUpdateLesson: "http://localhost:9090/lesson/saveOrUpdate",
   delLesson: "http://localhost:9090/lesson/delLesson",
   getLessonStd:"http://localhost:9090/stdLesson/getStudent",
+  getTree:"http://localhost:9090/tree/getTree",
+  addSection:"http://localhost:9090/tree/saveNode",
+  delNode:"http://localhost:9090/tree/delNode",
+  getTask:"http://localhost:9090/task/getTask",
+  saveOrEditTask:"http://localhost:9090/task/saveTask",
+  delTask:"http://localhost:9090/task/delTask",
 }
 export default api;
