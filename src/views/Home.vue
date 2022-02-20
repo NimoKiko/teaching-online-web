@@ -5,7 +5,7 @@
       <div class="pageTitle">{{ pageTitle }}</div>
       <el-dropdown class="personal" trigger="click">
         <span class="el-dropdown-link">
-          admin
+          {{role}}
           <el-icon class="el-icon--right">
             <arrow-down />
           </el-icon>
@@ -23,10 +23,10 @@
           <el-menu-item index="1">
             <span>课程管理</span>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="2" v-if="appear">
             <span>学生管理</span>
           </el-menu-item>
-          <el-menu-item index="3">
+          <el-menu-item index="3" v-if="appear">
             <span>教师管理</span>
           </el-menu-item>
         </el-menu>
@@ -51,6 +51,8 @@ export default {
   data() {
     return {
       pageTitle: "课程管理",
+      appear:true,
+      role:"",
     };
   },
   methods: {
@@ -71,6 +73,17 @@ export default {
     },
     logout(){
       self.location = "/login";
+    }
+  },
+  mounted(){
+    this.$router.push("/lesson");
+    let role = localStorage.getItem("role");
+    if(role == "TEACHER") {
+      this.appear = false;
+      this.role = "teacher";
+    } else if(role == "ADMIN"){
+      this.appear = true;
+      this.role = "admin";
     }
   },
   components: {

@@ -12,14 +12,35 @@
           class="demo-ruleForm"
           :size="formSize"
         >
-          <el-form-item class="formItem" label="账号" label-width="60px" prop="account" style="margin-top:30px">
-            <el-input v-model="ruleForm.account" placeholder="请输入账号"></el-input>
+          <el-form-item
+            class="formItem"
+            label="账号"
+            label-width="60px"
+            prop="account"
+            style="margin-top: 30px"
+          >
+            <el-input
+              v-model="ruleForm.worknum"
+              placeholder="请输入账号"
+            ></el-input>
           </el-form-item>
-          <el-form-item class="formItem" label="密码" label-width="60px" prop="password">
-            <el-input v-model="ruleForm.password" placeholder="请输入密码"></el-input>
+          <el-form-item
+            class="formItem"
+            label="密码"
+            label-width="60px"
+            prop="password"
+          >
+            <el-input
+              v-model="ruleForm.password"
+              show-password
+              placeholder="请输入密码"
+            ></el-input>
           </el-form-item>
           <el-form-item class="formItem" label-width="0px">
-            <el-button class="login-btn" type="primary" @click="submitForm(ruleForm)"
+            <el-button
+              class="login-btn"
+              type="primary"
+              @click="submitForm(ruleForm)"
               >登录</el-button
             >
           </el-form-item>
@@ -34,21 +55,28 @@ export default {
   data() {
     return {
       ruleForm: {
-        account: "",
+        worknum: "",
         password: "",
       },
       rules: {
-        account: [{ required: true, message: "请输入账号", trigger: "blur" }],
+        worknum: [{ required: true, message: "请输入账号", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
       },
     };
   },
   methods: {
-    submitForm(val){
+    submitForm(val) {
       console.log(val);
-      self.location = "/lesson";
-    }
-  }
+      this.$store.dispatch("login", val);
+      let role = localStorage.getItem("role");
+      if (role == "TEACHER" || role == "ADMIN") {
+        self.location = "/home";
+      } else{
+        this.$message.error("账号或密码错误！");
+      }
+      //
+    },
+  },
 };
 </script>
 
@@ -85,12 +113,12 @@ export default {
       border: 1px solid rgba(255, 255, 255, 0.5);
       width: 90%;
     }
-     .formItem {
+    .formItem {
       // border: 1px solid red;
       display: flex;
       flex-direction: row;
       justify-content: center;
-      .login-btn{
+      .login-btn {
         width: 100px;
         margin-top: 20px;
         margin-left: 80px;

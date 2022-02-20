@@ -3,7 +3,7 @@ import login from '../views/login/login.vue'
 
 
 const routes = [
-  { path: '/login', component: login },
+  { path: '/', component: login },
 ]
 
 const router = createRouter({

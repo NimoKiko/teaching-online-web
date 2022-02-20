@@ -4,9 +4,9 @@ module.exports = {
       // page 的入口
       entry: "src/views/login/main.js",
       // 模板来源
-      template: "public/login.html",
+      template: "public/index.html",
       // 在 dist/index.html 的输出
-      filename: "login.html",
+      filename: "index.html",
       // 当使用 title 选项时，
       // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
       title: "登录",
@@ -16,10 +16,10 @@ module.exports = {
     },
     home: {
       entry: "src/main.js",
-      template: "public/index.html",
-      filename: "index.html",
+      template: "public/home.html",
+      filename: "home.html",
       title: "首页",
       chunks: ["chunk-vendors", "chunk-common", "home"]
     },  
-  }
+  },
 };

@@ -1,9 +1,11 @@
 import { createStore } from 'vuex'
-import final from "./finalModule"
+import final from "./final/finalModule"
+import login from "./login/loginModule"
 
 
 export default createStore({
   modules: {
-    final
+    final,
+    login
   }
 });
