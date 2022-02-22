@@ -230,10 +230,10 @@ export default {
     // 显示新增课程弹框
     addLesson() {
       this.addLessonDialogVisible = true;
-      console.log(this.teaList);
+      // console.log(this.teaList);
       let list = [];
       for (let item of this.teaList) {
-        console.log(item);
+        // console.log(item);
         let temp = {
           label: "",
           value: "",
@@ -248,6 +248,10 @@ export default {
     // 保存新增信息
     saveLesson() {
       console.log(this.addParams);
+      let params = {
+        teaname: this.addParams.teaname,
+        lessonName: this.addParams.lessonname,
+      };
       this.$store.dispatch("saveOrUpdateLesson", this.addParams).then((res) => {
         if (res.data) {
           this.addLessonDialogVisible = false;
@@ -260,6 +264,13 @@ export default {
         } else {
           this.$message.error("添加失败！");
         }
+        this.$store.dispatch("saveTeaLesson", params).then((res) => {
+          if (res.data) {
+            console.log("入库成功");
+          } else {
+            console.log("入库失败");
+          }
+        });
       });
     },
     // 显示编辑弹框
@@ -268,10 +279,29 @@ export default {
       this.editParams.teaname = row.teaname;
       this.editParams.id = row.id;
       this.editLessonDialogVisible = true;
+
+      let list = [];
+      for (let item of this.teaList) {
+        console.log(item);
+        let temp = {
+          label: "",
+          value: "",
+        };
+        temp.label = item.teaname;
+        temp.value = item.teaname;
+        list.push(temp);
+      }
+      // console.log(list);
+      this.teaOption = list;
     },
     // 保存编辑信息
     editLessonInfo() {
       console.log(this.editParams);
+      let params = {
+        lessonId: this.editParams.id,
+        lessonName: this.editParams.lessonname,
+        teaname: this.editParams.teaname,
+      };
       this.$store
         .dispatch("saveOrUpdateLesson", this.editParams)
         .then((res) => {
@@ -279,6 +309,13 @@ export default {
             this.editLessonDialogVisible = false;
             this.load();
             this.$message.success("修改成功！");
+            this.$store.dispatch("updateTeaLesson", params).then((res) => {
+              if (res.data) {
+                console.log("教师课程表修改成功");
+              } else {
+                console.log("教师课表修改失败");
+              }
+            });
           } else {
             this.$message.error("修改失败！");
           }
@@ -305,13 +342,13 @@ export default {
       console.log(row);
       // this.$router.push("/lessonDetail");
       this.$router.push({
-        name:'detail',
-        path:'/lessonDetail',
-        params:{
+        name: "detail",
+        path: "/lessonDetail",
+        params: {
           id: row.id,
           teaname: row.teaname,
-          lessonname: row.lessonname
-        }
+          lessonname: row.lessonname,
+        },
       });
     },
     // 处理上传资料

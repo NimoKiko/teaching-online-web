@@ -211,27 +211,51 @@
       <div class="taskContainer">
         <div class="taskBox">
           <div class="taskTitle">题干</div>
-          <el-input type="textarea" class="input" v-model="editTaskParams.text"></el-input>
+          <el-input
+            type="textarea"
+            class="input"
+            v-model="editTaskParams.text"
+          ></el-input>
         </div>
         <div class="taskBox">
           <div class="taskTitle">A.</div>
-          <el-input type="textarea" class="input" v-model="editTaskParams.a"></el-input>
+          <el-input
+            type="textarea"
+            class="input"
+            v-model="editTaskParams.a"
+          ></el-input>
         </div>
         <div class="taskBox">
           <div class="taskTitle">B.</div>
-          <el-input type="textarea" class="input" v-model="editTaskParams.b"></el-input>
+          <el-input
+            type="textarea"
+            class="input"
+            v-model="editTaskParams.b"
+          ></el-input>
         </div>
         <div class="taskBox">
           <div class="taskTitle">C.</div>
-          <el-input type="textarea" class="input" v-model="editTaskParams.c"></el-input>
+          <el-input
+            type="textarea"
+            class="input"
+            v-model="editTaskParams.c"
+          ></el-input>
         </div>
         <div class="taskBox">
           <div class="taskTitle">D.</div>
-          <el-input type="textarea" class="input" v-model="editTaskParams.d"></el-input>
+          <el-input
+            type="textarea"
+            class="input"
+            v-model="editTaskParams.d"
+          ></el-input>
         </div>
         <div class="taskBox">
           <div class="taskTitle">正确答案</div>
-          <el-input type="text" class="input" v-model="editTaskParams.correct"></el-input>
+          <el-input
+            type="text"
+            class="input"
+            v-model="editTaskParams.correct"
+          ></el-input>
         </div>
       </div>
       <template #footer>
@@ -248,6 +272,7 @@
 import { Plus, ElMessage } from "@element-plus/icons";
 import { mapState } from "vuex";
 import Vue from "vue";
+
 export default {
   data() {
     return {
@@ -284,7 +309,7 @@ export default {
         correct: "",
       },
       editTaskParams: {
-        taskId:null,
+        taskId: null,
         nodeId: null,
         text: "",
         a: "",
@@ -405,27 +430,29 @@ export default {
     //确认编辑按钮
     editTask() {
       console.log(this.editTaskParams);
-      this.$store.dispatch("saveOrEditTask",this.editTaskParams).then(res => {
-        if(res.data){
-          this.editTaskDialogVisible = false;
-          this.$store.dispatch("getTask", { nodeId: this.currentNodeId });
-          this.$message.success("作业修改成功！");
-        } else {
-          this.$message.error("作业修改失败！");
-        }
-      })
+      this.$store
+        .dispatch("saveOrEditTask", this.editTaskParams)
+        .then((res) => {
+          if (res.data) {
+            this.editTaskDialogVisible = false;
+            this.$store.dispatch("getTask", { nodeId: this.currentNodeId });
+            this.$message.success("作业修改成功！");
+          } else {
+            this.$message.error("作业修改失败！");
+          }
+        });
     },
     //删除作业
-    handleDelete(row){
+    handleDelete(row) {
       console.log(row.taskId);
-      this.$store.dispatch("delTask",{taskId: row.taskId}).then(res => {
-        if(res.data){
+      this.$store.dispatch("delTask", { taskId: row.taskId }).then((res) => {
+        if (res.data) {
           this.$store.dispatch("getTask", { nodeId: this.currentNodeId });
           this.$message.success("删除成功！");
         } else {
           this.$message.error("删除失败！");
         }
-      })
+      });
     },
   },
   mounted() {
@@ -436,6 +463,28 @@ export default {
     this.addSmallParams.lessonName = params.lessonname;
     this.addSmallParams.lessonId = params.id * 1;
     this.$store.dispatch("getTree", { lessonId: params.id });
+
+    // var d = new Date();
+    // d.setHours(d.getHours() - 8, d.getMinutes() - d.getTimezoneOffset());
+    // // console.log(d.toISOString());
+    // // console.log(d);
+    // let randomNum = Math.ceil(Math.random() * 1000000000000);
+    // randomNum = randomNum + "";
+    // console.log(randomNum);
+    // // let Signature ="OWI5ZGUwMDQ1ZTBjN2U4Y2VmM2JiMDQ5OWJlOGQzMjI4ZGYzOTA5Ng=="
+    // let AliyunParams = {
+    //   Action: "AssumeRole",
+    //   RoleArn: "acs:ram::1374024688142379:role/ramosstest",
+    //   RoleSessionName: "user",
+    //   Version: "2015-04-01",
+    //   Timestamp: d.toISOString(),
+    //   SignatureNonce: randomNum,
+    //   SignatureMethod: "HMAC-SHA1",
+    //   AccessKeyId: "LTAI5tF9qjDtAprQTeV78bYa",
+    //   SignatureVersion: "1.0",
+    //   Signature: "YzY1MmU5NmVhM2VmZTAyYWVlZWUzMTc5ZWIwYmExMzJmMDdhYmI2ZA==",
+    // };
+    // this.$store.dispatch("getSTS", AliyunParams);
   },
   computed: {
     ...mapState({

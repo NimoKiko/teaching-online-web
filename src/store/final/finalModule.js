@@ -15,6 +15,9 @@ import {
   getTask,
   saveOrEditTask,
   delTask,
+  saveTeaLesson,
+  updateTeaLesson,
+  getSTS,
 } from "./final";
 
 const state = {
@@ -103,6 +106,18 @@ const actions = {
   },
   delTask({ commit }, data) {
     let p = delTask(data);
+    return p;
+  },
+  saveTeaLesson({ commit }, data) {
+    let p = saveTeaLesson(data);
+    return p;
+  },
+  updateTeaLesson({ commit }, data) {
+    let p = updateTeaLesson(data);
+    return p;
+  },
+  getSTS({ commit }, data) {
+    let p = getSTS(data);
     return p;
   },
 };

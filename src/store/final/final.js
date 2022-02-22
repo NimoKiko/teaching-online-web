@@ -132,3 +132,26 @@ export function delTask(data) {
     method: "delete"
   });
 }
+//保存教师课表到数据库
+export function saveTeaLesson(params) {
+  return axios({
+    url: api.saveTeaLesson,
+    data: params,
+    method:"post"
+  });
+}
+//更新教师课表到数据库
+export function updateTeaLesson(params) {
+  return axios({
+    url: api.updateTeaLesson,
+    data: params,
+    method:"post"
+  });
+}
+//阿里云获取STS
+export function getSTS(params) {
+  return axios({
+    url: api.getSTS,
+    params: params,
+  });
+}
