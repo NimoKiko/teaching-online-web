@@ -58,6 +58,12 @@
           width="180"
           align="center"
         />
+        <el-table-column
+          prop="inviteCode"
+          label="邀请码"
+          width="180"
+          align="center"
+        />
         <el-table-column label="操作" align="center">
           <template v-slot="scope">
             <el-button
@@ -208,6 +214,7 @@ export default {
         id: null,
         lessonname: "",
         teaname: "",
+        inviteCode:""
       },
       teaOption: [],
     };
@@ -278,6 +285,12 @@ export default {
       this.editParams.lessonname = row.lessonname;
       this.editParams.teaname = row.teaname;
       this.editParams.id = row.id;
+      if(row.inviteCode){
+        this.editParams.inviteCode = row.inviteCode;
+      } else {
+        this.editParams.inviteCode = "";
+      }
+      
       this.editLessonDialogVisible = true;
 
       let list = [];
