@@ -209,6 +209,7 @@ export default {
       addParams: {
         lessonname: "",
         teaname: "",
+        inviteCode:""
       },
       editParams: {
         id: null,
