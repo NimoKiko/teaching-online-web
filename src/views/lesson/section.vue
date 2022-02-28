@@ -400,15 +400,12 @@ export default {
         if (res.data) {
           this.addTaskDialogVisible = false;
           this.$store.dispatch("getTask", { nodeId: this.currentNodeId });
-          this.addTaskParams = {
-            nodeId: null,
-            text: "",
-            a: "",
-            b: "",
-            c: "",
-            d: "",
-            correct: "",
-          };
+            this.addTaskParams.text = ""
+            this.addTaskParams.a = ""
+            this.addTaskParams.b = ""
+            this.addTaskParams.c = ""
+            this.addTaskParams.d = ""
+            this.addTaskParams.correct = ""
           this.$message.success("作业添加成功！");
         } else {
           this.$message.error("作业添加失败！");
