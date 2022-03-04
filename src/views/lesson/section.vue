@@ -34,7 +34,17 @@
       </div>
       <div class="operationBox" style="margin-top: 30px">
         <div class="operationTitle">视频文件上传：</div>
-        <el-button type="primary">视频上传</el-button>
+        <el-upload
+          class="upload-demo"
+          action="http://localhost:9090/file/upload"
+          :data="fileData"
+          :show-file-list="false"
+          :on-success="uploadSuccess"
+          :on-error="uploadFail"
+        >
+          <el-button type="primary">视频上传</el-button>
+        </el-upload>
+        <!-- <el-button type="primary">视频上传</el-button> -->
       </div>
       <div class="operationBox">
         <div class="operationTitle">文档文件上传：</div>
