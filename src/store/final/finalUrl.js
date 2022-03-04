@@ -21,6 +21,6 @@ const api = {
   saveTeaLesson:"http://localhost:9090/teaLesson/save",
   updateTeaLesson:"http://localhost:9090/teaLesson/update",
   //阿里云oss
-  getSTS:"https://sts.aliyuncs.com/"
+  fileUpload:"http://localhost:9090/upload/file",
 }
 export default api;

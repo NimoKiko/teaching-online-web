@@ -38,7 +38,16 @@
       </div>
       <div class="operationBox">
         <div class="operationTitle">文档文件上传：</div>
-        <el-button type="primary">文档上传</el-button>
+        <el-upload
+          class="upload-demo"
+          action="http://localhost:9090/file/upload"
+          :data="fileData"
+          :show-file-list="false"
+          :on-success="uploadSuccess"
+          :on-error="uploadFail"
+        >
+          <el-button type="primary">文档上传</el-button>
+        </el-upload>
       </div>
       <div class="operationBox">
         <div class="operationTitle">布置作业：</div>
@@ -299,6 +308,7 @@ export default {
       appear: false,
       Title: "",
       currentNodeId: null,
+      currentLessonId: null,
       addTaskParams: {
         nodeId: null,
         text: "",
@@ -317,6 +327,11 @@ export default {
         c: "",
         d: "",
         correct: "",
+      },
+      fileList: [],
+      fileData: {
+        nodeId: null,
+        lessonId: null,
       },
     };
   },
@@ -386,8 +401,19 @@ export default {
         this.Title = val.node;
         this.addTaskParams.nodeId = val.nodeId;
         this.currentNodeId = val.nodeId;
+        this.fileData.nodeId = val.nodeId;
+        this.fileData.lessonId = this.currentLessonId;
+        console.log(this.fileData);
         this.$store.dispatch("getTask", { nodeId: val.nodeId });
       }
+    },
+    //文件上传成功
+    uploadSuccess() {
+      this.$message.success("文件上传成功!");
+    },
+    //文件上传失败
+    uploadFail() {
+      this.$message.success("文件上传失败!");
     },
     //新增作业弹窗
     addTask() {
@@ -400,12 +426,12 @@ export default {
         if (res.data) {
           this.addTaskDialogVisible = false;
           this.$store.dispatch("getTask", { nodeId: this.currentNodeId });
-            this.addTaskParams.text = ""
-            this.addTaskParams.a = ""
-            this.addTaskParams.b = ""
-            this.addTaskParams.c = ""
-            this.addTaskParams.d = ""
-            this.addTaskParams.correct = ""
+          this.addTaskParams.text = "";
+          this.addTaskParams.a = "";
+          this.addTaskParams.b = "";
+          this.addTaskParams.c = "";
+          this.addTaskParams.d = "";
+          this.addTaskParams.correct = "";
           this.$message.success("作业添加成功！");
         } else {
           this.$message.error("作业添加失败！");
@@ -455,33 +481,12 @@ export default {
   mounted() {
     // console.log(this.$route.params);
     let params = this.$route.params;
+    this.currentLessonId = params.id * 1;
     this.addBigParams.lessonName = params.lessonname;
     this.addBigParams.lessonId = params.id * 1;
     this.addSmallParams.lessonName = params.lessonname;
     this.addSmallParams.lessonId = params.id * 1;
     this.$store.dispatch("getTree", { lessonId: params.id });
-
-    // var d = new Date();
-    // d.setHours(d.getHours() - 8, d.getMinutes() - d.getTimezoneOffset());
-    // // console.log(d.toISOString());
-    // // console.log(d);
-    // let randomNum = Math.ceil(Math.random() * 1000000000000);
-    // randomNum = randomNum + "";
-    // console.log(randomNum);
-    // // let Signature ="OWI5ZGUwMDQ1ZTBjN2U4Y2VmM2JiMDQ5OWJlOGQzMjI4ZGYzOTA5Ng=="
-    // let AliyunParams = {
-    //   Action: "AssumeRole",
-    //   RoleArn: "acs:ram::1374024688142379:role/ramosstest",
-    //   RoleSessionName: "user",
-    //   Version: "2015-04-01",
-    //   Timestamp: d.toISOString(),
-    //   SignatureNonce: randomNum,
-    //   SignatureMethod: "HMAC-SHA1",
-    //   AccessKeyId: "LTAI5tF9qjDtAprQTeV78bYa",
-    //   SignatureVersion: "1.0",
-    //   Signature: "YzY1MmU5NmVhM2VmZTAyYWVlZWUzMTc5ZWIwYmExMzJmMDdhYmI2ZA==",
-    // };
-    // this.$store.dispatch("getSTS", AliyunParams);
   },
   computed: {
     ...mapState({

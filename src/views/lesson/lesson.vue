@@ -80,13 +80,29 @@
             >
               详情
             </el-button>
-            <el-button
+            <el-upload
+              class="upload-demo"
+              action="http://localhost:9090/file/upload"
+              :data="fileData"
+              :show-file-list="false"
+              :on-success="uploadSuccess"
+              :on-error="uploadFail"
+            >
+              <el-button
+                size="small"
+                type="primary"
+                @click="handleUpload(scope.row)"
+              >
+                上传附件
+              </el-button>
+            </el-upload>
+            <!-- <el-button
               size="small"
               type="primary"
               @click="handleUpload(scope.row)"
             >
               上传附件
-            </el-button>
+            </el-button> -->
             <el-button
               size="small"
               type="danger"
@@ -209,15 +225,19 @@ export default {
       addParams: {
         lessonname: "",
         teaname: "",
-        inviteCode:""
+        inviteCode: "",
       },
       editParams: {
         id: null,
         lessonname: "",
         teaname: "",
-        inviteCode:""
+        inviteCode: "",
       },
       teaOption: [],
+      fileData:{
+        nodeId: -1,
+        lessonId: null
+      }
     };
   },
   methods: {
@@ -286,12 +306,12 @@ export default {
       this.editParams.lessonname = row.lessonname;
       this.editParams.teaname = row.teaname;
       this.editParams.id = row.id;
-      if(row.inviteCode){
+      if (row.inviteCode) {
         this.editParams.inviteCode = row.inviteCode;
       } else {
         this.editParams.inviteCode = "";
       }
-      
+
       this.editLessonDialogVisible = true;
 
       let list = [];
@@ -366,7 +386,16 @@ export default {
       });
     },
     // 处理上传资料
-    handleUpload() {},
+    handleUpload(row) {
+      console.log(row);
+      this.fileData.lessonId = row.id;
+    },
+    uploadSuccess(){
+      this.$message.success("文件上传成功!");
+    },
+    uploadFail(){
+      this.$message.success("文件上传失败!");
+    },
     // 获取列表
     load() {
       this.$store.dispatch("getLessonList", this.queryParams);
@@ -442,6 +471,15 @@ export default {
     width: 70%;
     .page {
       margin-top: 20px;
+    }
+    /deep/ .cell {
+      display: flex;
+      flex-direction: row;
+    }
+    /deep/ .upload-demo {
+      width: fit-content;
+      margin-left: 12px;
+      margin-right: 12px;
     }
   }
   .titleBox {

@@ -149,9 +149,10 @@ export function updateTeaLesson(params) {
   });
 }
 //阿里云获取STS
-export function getSTS(params) {
+export function fileUpload(params) {
   return axios({
-    url: api.getSTS,
-    params: params,
+    url: api.fileUpload,
+    data: params,
+    method:"post"
   });
 }

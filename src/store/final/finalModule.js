@@ -17,7 +17,7 @@ import {
   delTask,
   saveTeaLesson,
   updateTeaLesson,
-  getSTS,
+  fileUpload,
 } from "./final";
 
 const state = {
@@ -116,8 +116,8 @@ const actions = {
     let p = updateTeaLesson(data);
     return p;
   },
-  getSTS({ commit }, data) {
-    let p = getSTS(data);
+  fileUpload({ commit }, data) {
+    let p = fileUpload(data);
     return p;
   },
 };
