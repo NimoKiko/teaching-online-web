@@ -156,6 +156,15 @@
           </el-option>
         </el-select>
       </div>
+      <div class="titleBox" style="margin-top: 20px">
+        <div class="titleText">课程周次</div>
+        <el-input
+          type="text"
+          class="inputText"
+          v-model="addParams.totalWeek"
+          size="large"
+        ></el-input>
+      </div>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="addLessonDialogVisible = false">取消</el-button>
@@ -197,6 +206,15 @@
           </el-option>
         </el-select>
       </div>
+      <div class="titleBox" style="margin-top: 20px">
+        <div class="titleText">课程周次</div>
+        <el-input
+          type="text"
+          class="inputText"
+          v-model="editParams.totalWeek"
+          size="large"
+        ></el-input>
+      </div>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="editLessonDialogVisible = false">取消</el-button>
@@ -226,18 +244,20 @@ export default {
         lessonname: "",
         teaname: "",
         inviteCode: "",
+        totalWeek: null,
       },
       editParams: {
         id: null,
         lessonname: "",
         teaname: "",
         inviteCode: "",
+        totalWeek: null,
       },
       teaOption: [],
-      fileData:{
+      fileData: {
         nodeId: -1,
-        lessonId: null
-      }
+        lessonId: null,
+      },
     };
   },
   methods: {
@@ -287,6 +307,7 @@ export default {
           this.addParams = {
             lessonname: "",
             teaname: "",
+            totalWeek: null,
           };
           this.$message.success("添加成功！");
         } else {
@@ -306,6 +327,7 @@ export default {
       this.editParams.lessonname = row.lessonname;
       this.editParams.teaname = row.teaname;
       this.editParams.id = row.id;
+      this.editParams.totalWeek = row.totalWeek;
       if (row.inviteCode) {
         this.editParams.inviteCode = row.inviteCode;
       } else {
@@ -390,10 +412,10 @@ export default {
       console.log(row);
       this.fileData.lessonId = row.id;
     },
-    uploadSuccess(){
+    uploadSuccess() {
       this.$message.success("文件上传成功!");
     },
-    uploadFail(){
+    uploadFail() {
       this.$message.success("文件上传失败!");
     },
     // 获取列表
